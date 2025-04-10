@@ -1,0 +1,90 @@
+*&---------------------------------------------------------------------*
+*& Report ZPRACTICA_FIELD
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT ZPRACTICA_FIELD.
+
+INCLUDE ZPRACTICA_FIELD_TOP.
+INCLUDE ZPRACTICA_FIELD_CL.
+INCLUDE ZPRACTICA_FIELD_EVENT.
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+*&---------------------------------------------------------------------*
+*& Include          ZPRACTICA_FIELD_TOP
+*&---------------------------------------------------------------------*
+TYPES: BEGIN OF ty_persona,
+         id_persona TYPE int3,
+         name       TYPE string,
+         cargo      TYPE string,
+         salario    TYPE int3,
+       END OF ty_persona.
+
+DATA: tyt_persona TYPE STANDARD TABLE OF ty_persona,
+      ls_persona   TYPE ty_persona.
+
+ls_persona-id_persona = 1.
+ls_persona-name = 'Jose Luis'.
+ls_persona-cargo = 'Operador'.
+ls_persona-salario = 1400.
+APPEND ls_persona TO tyt_persona.
+
+ls_persona-id_persona = 2.
+ls_persona-name = 'Luis Alfonso'.
+ls_persona-cargo = 'Cantante'.
+ls_persona-salario = 2000.
+APPEND ls_persona TO tyt_persona.
+
+ls_persona-id_persona = 3.
+ls_persona-name = 'James Rodríguez'.
+ls_persona-cargo = 'Futbolista'.
+ls_persona-salario = 5600.
+APPEND ls_persona TO tyt_persona.
+
+/////////////////////////////////////////////////////////////////////////////
+
+*&---------------------------------------------------------------------*
+*& Include          ZPRACTICA_FIELD_CL
+*&---------------------------------------------------------------------*
+CLASS cl_persona DEFINITION.
+
+  PUBLIC SECTION.
+  METHODS: main.
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+  ENDCLASS.
+
+  CLASS cl_persona IMPLEMENTATION.
+
+    METHOD main.
+
+      FIELD-SYMBOLS: <fs_persona> TYPE ty_persona.
+
+      LOOP AT tyt_persona ASSIGNING <fs_persona>.
+        <fs_persona>-salario = <fs_persona>-salario + 99.
+      ENDLOOP.
+
+      LOOP AT tyt_persona INTO ls_persona.
+        WRITE: / 'ID: ', ls_persona-id_persona,
+               / 'Nombre: ', ls_persona-name,
+               / 'Cargo: ', ls_persona-cargo,
+               / 'Salario: ', ls_persona-salario.
+      ENDLOOP.
+
+      ENDMETHOD.
+
+      ENDCLASS.
+
+/////////////////////////////////////////////////////////////////////////////////
+
+*&---------------------------------------------------------------------*
+*& Include          ZPRACTICA_FIELD_EVENT
+*&---------------------------------------------------------------------*
+START-OF-SELECTION.
+DATA(persona) = NEW cl_persona( ).
+
+  persona->main( ).
